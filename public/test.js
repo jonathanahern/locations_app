@@ -1,8 +1,23 @@
 // var elem = document.getElementById(`locations_element`);
+   //     elem.innerHTML = current_product.lookbook_html
 var url = window.location.href;
 var shop = window.location.host;
+var locations = {};
 console.log("here")
+
 if (url.includes('/products/')) {
+    var location_inventory = {};
+    if (Object.keys(locations).length === 0){
+        fetch(`https://${shop}/admin/api/2020-04/locations.json`, {
+            method: "GET",
+        })
+            .then(res => res.json())
+            .then(resp => {
+                resp.locations.forEach(loc => {
+                    locations[loc.id]=loc.name
+                });
+            })
+    }
 
     let selector = document.getElementsByClassName("single-option-selector")[0];
 
@@ -14,18 +29,6 @@ if (url.includes('/products/')) {
 
     let prodID = meta.product.id;
     let varID = meta.product.variants[0].id;
-
-    // console.log(varID);
-    // fetch(`https://24413830.ngrok.io/api/v1/front_end/index?shop=${shop}`, {
-    //     method: "GET",
-    // })
-    //   .then(res => res.json())
-    //   .then(resp => {
-    //     let current_product = resp.filter(product => {
-    //       return product.shopify_handle == handle
-    //     })[0]
-    //     elem.innerHTML = current_product.lookbook_html
-    //   })
 
     fetch(`https://${shop}/admin/api/2020-04/products/${prodID}/variants/${varID}.json`, {
       method: "GET",
@@ -42,7 +45,12 @@ if (url.includes('/products/')) {
         })
             .then(res => res.json())
             .then(resp => {
-                console.log(resp);
+                resp.inventory_levels.forEach(locale => {
+                    let loc_name = locations[locale.location_id];
+                    let loc_count = locale.available;
+                    location_inventory[loc_name] = loc_count;
+                });
+                console.log(location_inventory);
             })
     }
 }
