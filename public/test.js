@@ -3,10 +3,14 @@
 var url = window.location.href;
 var shop = window.location.host;
 var locations = {};
-console.log("here")
 
 if (url.includes('/products/')) {
+
+    let prodID = meta.product.id;
+    let varID = meta.product.variants[0].id;
     var location_inventory = {};
+
+    //If location names haven't been grabbed yet.
     if (Object.keys(locations).length === 0){
         fetch(`https://${shop}/admin/api/2020-04/locations.json`, {
             method: "GET",
@@ -19,27 +23,36 @@ if (url.includes('/products/')) {
             })
     }
 
-    let selector = document.getElementsByClassName("single-option-selector")[0];
+    //If product has multiple variants
+    if (url.includes(`variant=`)) {
+        let selector = document.getElementsByClassName("single-option-selector")[0];
+        varID = url.split("variant=").pop();
+        fetchInventoryIDs();
 
-    selector.addEventListener('change', (event) => {
-        let new_url = window.location.href;
-        let new_var_id = new_url.split("variant=").pop();
-        console.log(new_var_id);
-    });
+        selector.addEventListener('change', (event) => {
+            let new_url = window.location.href;
+            varID = new_url.split("variant=").pop();
+            fetchInventoryIDs();
+        }); 
 
-    let prodID = meta.product.id;
-    let varID = meta.product.variants[0].id;
+    } else {
+        fetchInventoryIDs();
+    }
 
-    fetch(`https://${shop}/admin/api/2020-04/products/${prodID}/variants/${varID}.json`, {
-      method: "GET",
-    })
-        .then(res => res.json())
-        .then(resp => {
-            let inv = resp.variant.inventory_item_id;
-            fetchLocations(inv)
-      })
+    //Gets the inventory item id numbers.
+    function fetchInventoryIDs() {
+        fetch(`https://${shop}/admin/api/2020-04/products/${prodID}/variants/${varID}.json`, {
+        method: "GET",
+        })
+            .then(res => res.json())
+            .then(resp => {
+                let inv = resp.variant.inventory_item_id;
+                fetchLocationCounts(inv)
+        })
+    }
 
-    function fetchLocations(inventory_num) {
+    //Gets the inventory count with the inventory item id
+    function fetchLocationCounts(inventory_num) {
         fetch(`https://${shop}/admin/api/2020-04/inventory_levels.json?inventory_item_ids=${inventory_num}.json`, {
             method: "GET",
         })
@@ -53,10 +66,5 @@ if (url.includes('/products/')) {
                 console.log(location_inventory);
             })
     }
+
 }
-
-// https://${shop}/admin/api/2020-04/products/4476261564483.json
-
-// https://${shop}/admin/api/2020-04/products/4476261564483/variants/31758683734083.json
-
-// https://${shop}/admin/api/2020-04/inventory_levels.json?inventory_item_ids=33363914293315.json
