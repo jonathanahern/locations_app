@@ -3,12 +3,26 @@
 var url = window.location.href;
 var shop = window.location.host;
 var locations = {};
+var locations_container;
 
 if (url.includes('/products/')) {
 
     let prodID = meta.product.id;
     let varID = meta.product.variants[0].id;
     var location_inventory = {};
+
+    if (document.getElementById("locations_container") === null) {
+        locations_container = document.createElement("ul");
+        locations_container.setAttribute("id", "locations_container");
+        var form = document.getElementById("shopify-section-product-template").getElementsByTagName("FORM")[0]; 
+        locations_container.innerHTML = 'In-store quantities:';
+        let loadingLi = document.createElement("li");
+        loadingLi.innerHTML = "LOADING";
+        locations_container.appendChild(loadingLi);
+        form.insertBefore(locations_container, form.firstChild);
+
+    }
+
 
     //If location names haven't been grabbed yet.
     if (Object.keys(locations).length === 0){
@@ -30,11 +44,14 @@ if (url.includes('/products/')) {
         fetchInventoryIDs();
 
         selector.addEventListener('change', (event) => {
+            locations_container.innerHTML = 'In-store quantities:';
+            let loadingLi = document.createElement("li");
+            loadingLi.innerHTML = "LOADING";
+            locations_container.appendChild(loadingLi);
             let new_url = window.location.href;
             varID = new_url.split("variant=").pop();
             fetchInventoryIDs();
         }); 
-
     } else {
         fetchInventoryIDs();
     }
@@ -64,7 +81,21 @@ if (url.includes('/products/')) {
                     location_inventory[loc_name] = loc_count;
                 });
                 console.log(location_inventory);
+                placeLocationData();
             })
+    }
+    //Place data in UL
+    function placeLocationData(){
+        let locationArr = Object.keys(location_inventory);
+        locations_container.innerHTML = 'In-store quantities:';
+        console.log(locationArr);
+        for (let i = 0; i < locationArr.length; i++) {
+            const locationEle = locationArr[i];
+            const locationTotal = location_inventory[locationEle]
+            let liEle = document.createElement("li");
+            liEle.innerHTML = `${locationEle}: ${locationTotal}`;
+            locations_container.appendChild(liEle);
+        }
     }
 
 }
