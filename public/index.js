@@ -1,5 +1,3 @@
-// var elem = document.getElementById(`locations_element`);
-   //     elem.innerHTML = current_product.lookbook_html
 var url = window.location.href;
 var shop = window.location.host;
 var locations = {};
@@ -20,9 +18,7 @@ if (url.includes('/products/')) {
         loadingLi.innerHTML = "LOADING";
         locations_container.appendChild(loadingLi);
         form.insertBefore(locations_container, form.firstChild);
-
     }
-
 
     //If location names haven't been grabbed yet.
     if (Object.keys(locations).length === 0){
@@ -96,32 +92,5 @@ if (url.includes('/products/')) {
             liEle.innerHTML = `${locationEle}, QTY: ${locationTotal}`;
             locations_container.appendChild(liEle);
         }
-    }
-
-    fetch(`https://${shop}/cart.js`, {
-        method: "GET",
-    })
-        .then(res => res.json())
-        .then(resp => {
-            // console.log(resp);
-        })
-}
-
-if (url.includes('/cart')) {
-    console.log('cart!!!');
-
-    var bodyEle = {
-    attributes: {
-        'Delivery': 'Yes'
-    }
-};
-    // jQuery.post('/cart/update.js', "attributes[Gift wrap]=Yes");
-    fetch(`https://${shop}/cart/update.js`, {
-        method: "POST",
-        body: JSON.stringify(bodyEle)
-    })
-        .then(res => res.json())
-        .then(resp => {
-            console.log(resp);
-        })
+    }  
 }
