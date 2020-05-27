@@ -98,4 +98,32 @@ if (url.includes('/products/')) {
         }
     }
 
+    fetch(`https://${shop}/cart.js`, {
+        method: "GET",
+    })
+        .then(res => res.json())
+        .then(resp => {
+            console.log(resp);
+        })
+
+}
+
+if (url.includes('/cart')) {
+    console.log('cart!!!');
+
+    var bodyEle = `{
+    attributes: {
+        'Gift wrap': 'Yes'
+    }
+}`;
+
+    // jQuery.post('/cart/update.js', "attributes[Gift wrap]=Yes");
+    fetch(`https://${shop}/cart/update.js`, {
+        method: "POST",
+        body: bodyEle
+    })
+        .then(res => res.json())
+        .then(resp => {
+            console.log(resp);
+        })
 }
