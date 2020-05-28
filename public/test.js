@@ -80,7 +80,6 @@ if (url.includes('/products/')) {
                     let loc_count = locale.available;
                     location_inventory[loc_name] = loc_count;
                 });
-                console.log(location_inventory);
                 placeLocationData();
             })
     }
@@ -88,7 +87,6 @@ if (url.includes('/products/')) {
     function placeLocationData(){
         let locationArr = Object.keys(location_inventory);
         locations_container.innerHTML = 'In store purchases available at these other locations:';
-        // console.log(locationArr);
         for (let i = 0; i < locationArr.length; i++) {
             const locationEle = locationArr[i];
             const locationTotal = location_inventory[locationEle]

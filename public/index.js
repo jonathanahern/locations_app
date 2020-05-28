@@ -76,7 +76,6 @@ if (url.includes('/products/')) {
                     let loc_count = locale.available;
                     location_inventory[loc_name] = loc_count;
                 });
-                console.log(location_inventory);
                 placeLocationData();
             })
     }
