@@ -1,6 +1,6 @@
 ShopifyApp.configure do |config|
   config.application_name = "My Shopify App"
-  config.api_key = `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`;
+  config.api_key = `9fb123b7b3243df33b63c75ff2cac9d5`;
   config.secret = `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`;
   config.old_secret = ""
   config.scope = "read_products, read_script_tags, write_script_tags, read_inventory" # Consult this page for more scope options:
